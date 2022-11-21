@@ -1,16 +1,16 @@
 
 <script setup>
 import Charts from './Charts.vue'
-
+import { mean } from 'd3'
 </script>
 
 <template>
-    <div class="graphcontainer">
 
+    <div class="graphcontainer">
         <!-- input for theme -->
         <section class="theme-chooser">
             <h2>Kies een thema: </h2>
-            <select v-if="themes" v-model="selected" class="newtheme" @change="newTheme">
+            <select v-if="themes" v-model="selected" class="newtheme" @change="newTheme()">
                 <option v-for="theme in themes" :value="{ name: theme.name, id: theme.id }">{{ theme.name }}</option>
             </select>
         </section>
@@ -22,13 +22,13 @@ import Charts from './Charts.vue'
                 <option value="jaar">Alle jaren</option>
                 <option v-for="year in years" :value="year.year">{{ year.year }}</option>
             </select>
-
-            <!-- the chart -->
-            <Charts v-if="results" :data="results"></Charts>
+            
+            <Charts v-if="jaren" :data="results" :jaren="jaren"></Charts>
         </section>
-    </div>
-</template>
 
+    </div>
+
+</template>
 <script>
 let API_KEY = import.meta.env.VITE_API_KEY // hidden api key from rebrickable API
 
@@ -39,7 +39,9 @@ export default {
             themes: null,
             results: null,
             years: null,
+            jaren: null,
             selected: [],
+            year: null
         }
     },
 
@@ -56,7 +58,7 @@ export default {
         },
 
         // when a new theme is selected
-        newTheme() {
+        async newTheme() {
             this.results = null // reset results so the bar charts regenerates
             this.theme = this.selected
             this.retrieveData(this.selected.id) // retrieve data for the selected theme
@@ -64,24 +66,56 @@ export default {
 
         // get sets and years of one theme
         async retrieveData(theme) {
-            fetch('https://rebrickable.com/api/v3/lego/sets/?page_size=1000&theme_id=' + theme + '&key=' + API_KEY)
+            this.jaren = null
+
+            await fetch('https://rebrickable.com/api/v3/lego/sets/?page_size=1000&theme_id=' + theme + '&key=' + API_KEY)
                 .then((response) => response.json())
                 .then((data) => this.results = data.results)
                 .then((data) => this.years = data.reduce((o, a) => {
                     o[a.year] = a; return o
                 }, {}));
+            this.calculate(this.results)
         },
 
+
+        calculate(data) {
+            const distinct = (value, index, self) => {
+                return self.indexOf(value) === index;
+            }
+
+            let lineYears = data.map(d => d.year)
+
+            lineYears = lineYears.filter(distinct)
+
+            let yearAndMean = []
+
+            lineYears.forEach(year => {
+                let setsFromYear = data.filter(d => d.year === year)
+                let gem = mean(setsFromYear, set => set.num_parts)
+                yearAndMean.push({ 'year': year, 'mean': Number(gem) })
+            })
+
+            setTimeout(() => {
+                this.jaren = yearAndMean.sort().sort((a, b) =>
+                    a.year - b.year)
+            }, 10);
+        },
+
+
         // when a year is selected
-        filterDataOnYear() {
+        async filterDataOnYear() {
+            this.jaren = null
             const year = event.target.value // value from input
             this.year = year
-            this.retrieveData(this.theme.id)
+
+            await this.retrieveData(this.theme.id)
+
             var newResults = (year === 'jaar') ? this.results : this.results.filter(result => result.year === Number(year));
             this.results = null // reset results
+
             setTimeout(() => {
                 this.results = newResults // set filtered results
-            }, 10);
+            }, 8);
         },
     },
 
@@ -89,10 +123,6 @@ export default {
         this.getThemes()
     }
 }
-
-
-
-
 </script>
 
 <style >
@@ -172,11 +202,21 @@ h1 {
     height: 300px;
 }
 
-.domain,
-.yaxis {
+.domain {
     stroke: white;
     color: white;
-    font-size: 12px;
+    font-size: 8px;
     font-weight: 100;
+}
+
+.domain text:hover,
+.yaxis {
+    transition: .2s;
+    position: absolute;
+    font-size: 15px;
+    color: white;
+}
+.tick line{
+    color: gray;
 }
 </style>
