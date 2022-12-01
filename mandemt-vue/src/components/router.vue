@@ -1,15 +1,10 @@
 <script>
-import Home from './Home.vue'
 import D3 from './D3.vue'
-import Computed from './Computed.vue'
 
 import Rebrickable from './Rebrickable.vue'
 
 const routes = {
-    '/' : Home,
-    '/d3' : D3,
-    '/rebrickable' : Rebrickable,
-    '/computed' : Computed
+    '/' : Rebrickable,
 }
 export default {
   data() {
@@ -32,9 +27,7 @@ export default {
 <template>
   <header>
     <a href="#/">Home</a> |
-    <a href="#/d3">d3</a> |
-    <a href="#/rebrickable">Rebrickable API</a> |
-    <a href="#/computed">Computed</a>
+    <a href="https://github.com/mandemt/personal-vue-prj">Github</a>
 </header>
 
 <Suspense>
@@ -52,4 +45,8 @@ opacity: 0;
 .fade-enter-active,
 .fade-leave-active {
 transition: opacity .2s ease;
+}
+a{
+  color :white;
+  text-decoration: none;
 }</style>

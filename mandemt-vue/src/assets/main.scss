@@ -1,0 +1,170 @@
+body {
+  font-family: Avenir;
+  margin: 0;
+  padding: 0;
+  background-color: #2f3640;
+}
+h4 {
+  color: black;
+  font-size: 20px;
+}
+.naam {
+  margin: auto;
+  // width: 50%;
+  border: white solid 3px;
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+button {
+  background-color: white;
+  color: black;
+  width: 250px;
+  font-weight: bold;
+  height: 75px;
+  border: none;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.graphcontainer {
+  display: flex;
+  flex-direction: column;
+}
+.theme-chooser {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+h2 {
+  color: white;
+  width: 100%;
+  margin: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+.newtheme {
+  margin: 1em 0;
+}
+select {
+  color: white;
+  padding: 0;
+  font-size: 18px;
+  margin: auto;
+  border: none;
+  width: 25%;
+  background-color: #718093;
+  text-align: center;
+  height: 50px;
+}
+h1 {
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-align: center;
+}
+.sets {
+  flex-direction: column;
+}
+.domain {
+  stroke: white;
+  color: white;
+  font-size: 8px;
+  font-weight: 100;
+}
+.domain text:hover,
+.yaxis {
+  transition: 0.2s ease;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+}
+.tick line {
+  color: gray;
+}
+.barchartsection {
+  display: flex;
+  height: 800px;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+circle {
+  z-index: 3;
+}
+.bargraph {
+  background-color: #222f3e;
+}
+ul {
+  width: 700px;
+  list-style-type: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 30px;
+  top: 10px;
+  right: calc(50% + 80px);
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    width: 50%;
+    text-align: center;
+  }
+}
+table img {
+  z-index: 8;
+  visibility: hidden;
+  position: absolute;
+  top: -100px;
+  padding: 3px;
+  background-color: gray;
+  right: 0;
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+}
+td {
+  position: relative;
+  &:hover {
+    img {
+      visibility: visible;
+    }
+  }
+}
+table a {
+  text-decoration: NONE;
+  font-weight: 800;
+  color: black;
+}
+tr:nth-of-type(odd) {
+  background-color: aqua;
+}
+tr:nth-of-type(even) {
+  background-color: white;
+}
+.allcharts {
+  background-color: #222f3e;
+  color: white;
+  font-size: 13px;
+  padding-top: 100px;
+  display: flex;
+  justify-content: space-around;
+}
+.bars rect {
+  transition: 0.2s ease;
+}
+rect {
+  fill: #78e08f;
+}
+rect:hover {
+  fill: #78e08f9e;
+}
+.line path {
+  stroke-width: 4px;
+}
+path {
+  fill: none;
+  stroke: white;
+  stroke-width: 2px;
+}
