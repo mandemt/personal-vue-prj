@@ -1,6 +1,7 @@
 <script>
 import Home from './Home.vue'
 import D3 from './D3.vue'
+import Computed from './Computed.vue'
 
 import Rebrickable from './Rebrickable.vue'
 
@@ -8,6 +9,7 @@ const routes = {
     '/' : Home,
     '/d3' : D3,
     '/rebrickable' : Rebrickable,
+    '/computed' : Computed
 }
 export default {
   data() {
@@ -28,9 +30,13 @@ export default {
 }
 </script>
 <template>
+  <header>
     <a href="#/">Home</a> |
     <a href="#/d3">d3</a> |
     <a href="#/rebrickable">Rebrickable API</a> |
+    <a href="#/computed">Computed</a>
+</header>
+
 <Suspense>
 <Transition name="fade">
 

@@ -2,6 +2,7 @@
 <script setup>
 import Charts from './Charts.vue'
 import { mean } from 'd3'
+import Computed from './Computed.vue'
 </script>
 
 <template>
@@ -10,22 +11,25 @@ import { mean } from 'd3'
         <!-- input for theme -->
         <section class="theme-chooser">
             <h2>Kies een thema: </h2>
-            <select v-if="themes" v-model="selected" class="newtheme" @change="newTheme()">
-                <option v-for="theme in themes" :value="{ name: theme.name, id: theme.id }">{{ theme.name }}</option>
+            <select v-model="selected" class="newtheme" @change="retrieveData()">
+                <option v-if="themes" v-for="theme in sortedThemes" :value="{ name: theme.name, id: theme.id }">{{
+                        theme.name
+                }}
+                </option>
             </select>
         </section>
-
+     
         <!-- filter the data on year  -->
-        <section class="filter">
-            <h1>{{ this.selected.name }}</h1>
-            <select v-if="years" @change="filterDataOnYear()">
-                <option value="jaar">Alle jaren</option>
-                <option v-for="year in years" :value="year.year">{{ year.year }}</option>
-            </select>
-            
-            <Charts v-if="jaren" :data="results" :jaren="jaren"></Charts>
-        </section>
-
+        <select v-if="results" v-model="filtered">
+            <option value="jaar">Alle jaren</option>
+            <option v-if="sortedYears" v-for="year in sortedYears" :value="year">{{ year }}</option>
+        </select>
+        <h1>{{ this.selected.name }}</h1>
+        <select v-model="filtering">
+<option>lol</option>
+<option value="fff">sort on piece count</option>
+</select>
+        <Computed :data="allData" :calculated="calculatedResults"></Computed>
     </div>
 
 </template>
@@ -36,12 +40,16 @@ export default {
 
     data() {
         return { // define all reactive states
-            themes: null,
-            results: null,
+            themes: [],
+            results: [],
             years: null,
-            jaren: null,
+            filtered: [],
+            jaren: [],
+            allData: [],
             selected: [],
-            year: null
+            theResults: [],
+            year: null,
+            theme: '',
         }
     },
 
@@ -51,74 +59,64 @@ export default {
         async getThemes() {
             let response = await fetch('https://rebrickable.com/api/v3/lego/themes/?page_size=500&key=' + API_KEY)
             let data = await response.json()
-            data.results.sort(function (a, b) {
-                return a.name.localeCompare(b.name)
-            })
             this.themes = data.results
         },
-
-        // when a new theme is selected
-        async newTheme() {
-            this.results = null // reset results so the bar charts regenerates
-            this.theme = this.selected
-            this.retrieveData(this.selected.id) // retrieve data for the selected theme
+        async retrieveData() {
+            this.filtered = 'jaar'
+            const response = await fetch('https://rebrickable.com/api/v3/lego/sets/?page_size=500&theme_id=' + this.selected.id + '&key=' + API_KEY)
+            let data = await response.json()
+            this.allData = await data.results
         },
-
-        // get sets and years of one theme
-        async retrieveData(theme) {
-            this.jaren = null
-
-            await fetch('https://rebrickable.com/api/v3/lego/sets/?page_size=1000&theme_id=' + theme + '&key=' + API_KEY)
-                .then((response) => response.json())
-                .then((data) => this.results = data.results)
-                .then((data) => this.years = data.reduce((o, a) => {
-                    o[a.year] = a; return o
-                }, {}));
-            this.calculate(this.results)
-        },
-
-
-        calculate(data) {
-            const distinct = (value, index, self) => {
-                return self.indexOf(value) === index;
-            }
-
-            let lineYears = data.map(d => d.year)
-
-            lineYears = lineYears.filter(distinct)
-
-            let yearAndMean = []
-
-            lineYears.forEach(year => {
-                let setsFromYear = data.filter(d => d.year === year)
-                let gem = mean(setsFromYear, set => set.num_parts)
-                yearAndMean.push({ 'year': year, 'mean': Number(gem) })
-            })
-
-            setTimeout(() => {
-                this.jaren = yearAndMean.sort().sort((a, b) =>
-                    a.year - b.year)
-            }, 10);
-        },
-
-
-        // when a year is selected
         async filterDataOnYear() {
-            this.jaren = null
             const year = event.target.value // value from input
             this.year = year
-
             await this.retrieveData(this.theme.id)
 
             var newResults = (year === 'jaar') ? this.results : this.results.filter(result => result.year === Number(year));
             this.results = null // reset results
-
             setTimeout(() => {
                 this.results = newResults // set filtered results
             }, 8);
         },
     },
 
+    computed: {
+        sortedThemes() {
+            return this.themes.sort((a, b) => a.name.localeCompare(b.name))
+        },
+        calculatedResults() {
+            let yearAndMean = []
+            this.sortedYears.forEach(year => {
+                let setsFromYear = this.allData.filter(d => d.year === year)
+                let gem = mean(setsFromYear, set => set.num_parts)
+                yearAndMean.push({ 'year': year, 'mean': Math.round(Number(gem)) })
+            })
+            return yearAndMean;
+        },
+        allData() {
+            if(this.filtering == 'fff'){
+                console.log(this.filtering)
+                return this.allData.sort((a, b) => a.num_parts - b.num_parts)
+            }
+            if (typeof this.filtered == 'number') {
+                return this.allData.filter(d => d.year === this.filtered)
+            }
+           
+            else {
+                return this.allData
+            }
+            console.log(this.filtering)
+            return this.allData
+        },
+
+        sortedYears() {
+            return new Set(this.allData.map(item => item.year).sort((a, b) => a - b));
+        },
+
+
+
+
+    },
     mounted() {
         this.getThemes()
     }
@@ -128,20 +126,18 @@ export default {
 <style >
 .graphcontainer {
     display: flex;
+    flex-direction: column;
 }
 
 .theme-chooser {
     display: flex;
     flex-direction: column;
-    background-color: #38ada9;
-    width: 50%;
     align-items: center;
     text-align: center;
 }
 
 h2 {
     color: white;
-    background: #82ccdd;
     width: 100%;
     margin: 0;
 
@@ -153,30 +149,20 @@ body {
 }
 
 .newtheme {
-    width: 50%;
-    margin: 5em 0;
+    margin: 1em 0;
 
-}
-
-.filter {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 70%;
-    background-color: #222f3e;
-    padding: 15px;
 }
 
 select {
+    color: white;
     padding: 0;
+    font-size: 18px;
     margin: auto;
     border: none;
-    background-color: #0abde3;
     width: 25%;
+    background-color: #718093;
     text-align: center;
     height: 50px;
-    border-radius: 20px;
-    color: black;
 
 }
 
@@ -211,12 +197,13 @@ h1 {
 
 .domain text:hover,
 .yaxis {
-    transition: .2s;
+    transition: .2s ease;
     position: absolute;
     font-size: 15px;
     color: white;
 }
-.tick line{
+
+.tick line {
     color: gray;
 }
 </style>

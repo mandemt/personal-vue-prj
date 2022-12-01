@@ -20,7 +20,7 @@
         <!-- filter the data on year  -->
         <section class="filter">
             <h1>{{ this.selected.name }}</h1>
-            <select v-if="years" @change="filterDataOnYear()">
+            <select v-if="years" v-model="filtered">
                 <option value="jaar">Alle jaren</option>
                 <option v-for="year in years" :value="year.year">{{ year.year }}</option>
             </select>
@@ -206,7 +206,7 @@ calculate(e){
 
 
 
-</script> -->
+</script> 
 
 <style >
 .expand-enter-active,
@@ -304,7 +304,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 70%;
     background-color: #222f3e;
     padding: 15px;
 }

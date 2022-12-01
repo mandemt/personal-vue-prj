@@ -11,7 +11,6 @@
                     :value="d.num_parts" :class="d.num_parts" :name="d.name" :url="d.set_url" :year="d.year" />
             </g>
         </svg>
-    </div>
     <section class="l-graph">
         <h4 v-if="this.details">{{ this.details }} </h4>
         <svg class="linegraph" :width="width" :height="height">
@@ -28,13 +27,16 @@
                 :value="j.mean">
             </circle>
         </svg>
+
     </section>
+    </div>
 
     <table>
         <tr>
             <th>set</th>
             <th>year</th>
             <th>pieces</th>
+            <th>set number</th>
         </tr>
         <tr v-for="d in data">
             <td>
@@ -43,6 +45,7 @@
             </td>
             <td>{{ d.year }}</td>
             <td>{{ d.num_parts }}</td>
+            <td>{{ d.set_num }}</td>
         </tr>
     </table>
 
@@ -62,7 +65,7 @@
 <script setup>
 // d3 functions
 import { scaleBand, scaleLinear, max, select, path, scalePoint, axisBottom, axisLeft, line, min, selectAll, curveCardinal } from 'd3'
-
+console.log('fasdjfasdf')
 // define the data type
 const props = defineProps({
     data: { type: Array, required: true },
@@ -72,7 +75,7 @@ const props = defineProps({
 
 let data = props.data // all data from Rebrickable.vue
 let jaren = props.jaren // the array containing the seperate years and mean amount of num_parts
-
+console.log(data)
 
 // settings for the horizontal and vertical axis
 let height = 800;
@@ -81,7 +84,7 @@ let width = 800
 // define the scales
 const xScale =
     scaleBand()
-        .range([0, width - 55]) //  the pixel range of the axis
+        .range([0, width - 250]) //  the pixel range of the axis
         .domain(data.map((d) => d.set_num)) // the data range of the axis (amount of items)
         .padding(0.2) // the space between the values
 
@@ -92,6 +95,7 @@ const yScale =
 
 //create the path with labels
 let xaxis = axisBottom(xScale)
+console.log(xaxis)
 let yaxis = axisLeft(yScale).tickSize(-width).ticks(20)
 
 // scales for the line graph
@@ -163,10 +167,13 @@ export default {
         showDetails() { // when hovering over a line chart point
             this.details = event.target.attributes.value.value
         },
+computed : {
 
+},
 
     },
     mounted() {
+        console.log('bar chart mounted')
     }
 }
 
@@ -233,6 +240,7 @@ tr:nth-of-type(even) {
 }
 
 .outer {
+    display: flex;
     width: 800;
     height: 800;
     overflow: scroll;
