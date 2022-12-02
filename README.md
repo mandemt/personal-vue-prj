@@ -2,7 +2,7 @@
 
 ### Introduction
 
-This application is made using vue.js.
+This application is made using vue.js and D3, data driven documents.
 
 It is used to get an insight of lego sets, you can get an overview, and also dive into details using the tables and hover events on the web page.
 The standard settings on this application gives you insight in the amount of pieces in a lego set, the year it has been released.
@@ -51,4 +51,4 @@ The fetching of data happens in the first file. Here it gets filtered and averag
 For more information, you can use my contact information.
 
 
-##### Tom Mandemaker, 2022  | Rebrickable API  https://rebrickable.com/api/v3/docs
+##### Tom Mandemaker, 2022  | Rebrickable API  https://rebrickable.com/api/v3/docs | https://d3js.org/
