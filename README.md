@@ -46,4 +46,4 @@ The fetching of data happens in the first file. Here it gets filtered and averag
 For more information, you can use my contact information.
 
 
-##### Tom Mandemaker, 2022  | Rebrickable API  https://rebrickable.com/api/v3/docs/?key=0ec2f10aec8ef5b1fb6c968828b665b6
+##### Tom Mandemaker, 2022  | Rebrickable API  https://rebrickable.com/api/v3/docs/
