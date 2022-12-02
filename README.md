@@ -16,10 +16,15 @@ To do that, in terminal run this command:
 
 ``` git clone https://github.com/mandemt/personal-vue-prj.git```
 
+For now, please switch to the branch `final-stage` using `git checkout final-stage`.
 
 open the file and go to the folder `/mandemt-vue`.
 
-In this folder, run `npm run dev`. The application should start on your localhost that is also presented in the terminal.
+In this folder, run `npm install `.
+
+It might also be possible you have to install sass using `npm install sass`
+
+Then, `npm run dev`. The application should start on your localhost that is also presented in the terminal.
 
 Once you opened the web page. It should show a screen without any information. This is because there is an API key missing.
 This is a key you can request by creating an account en verifying it on the site of the API creator.
