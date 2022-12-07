@@ -1,5 +1,6 @@
 # personal-vue-prj
-<img src="./mandemt-vue-banner.png">
+<img src="mandemt-vue-banner.png">
+
 ### Introduction
 
 This application is made using vue.js and D3, data driven documents.
