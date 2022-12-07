@@ -85,20 +85,13 @@ h1 {
 .tick line {
   color: gray;
 }
-.barchartsection {
-  display: flex;
-  height: 800px;
-  flex-direction: column-reverse;
-  align-items: center;
-}
 circle {
   z-index: 3;
 }
-.bargraph {
-  background-color: #222f3e;
-}
 ul {
-  width: 700px;
+  width: 80%;
+  margin: 0 auto;
+  height: 200px;
   list-style-type: none;
   background-color: white;
   border-radius: 10px;
@@ -111,6 +104,12 @@ ul {
     width: 50%;
     text-align: center;
   }
+  a{
+    color: black;
+  }
+}
+table{
+  margin: 30% 0;
 }
 table img {
   z-index: 8;

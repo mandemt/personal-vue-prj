@@ -1,13 +1,7 @@
 <template>
     <div class="allcharts">
         <section class="barchartsection">
-            <ul>
-                <li>  <h4> {{ details.name }}</h4></li>
-                <li>  <h4> <a :href="details.set_url">Link</a></h4></li>
-                <li>  <h4> {{ details.set_num }}</h4></li>
-                <li>  <h4> {{ details.num_parts }} pieces</h4></li>
-            </ul>
-            <svg v-if="this.data" class="bargraph" :width="width + 100" :height="730">
+            <svg v-if="this.data" class="bargraph" height="800" width="800" viewBox="0 0 900 600">
                 <g class="bars">
                     <rect v-for="d in data" v-on:mouseover="details = d" :x="xScale(d.set_num) + 50"
                         :y="yScale(d.num_parts) - 100" :width="xScale.bandwidth()"
@@ -18,20 +12,29 @@
                     {{ barAxis }}
                 </g>
             </svg>
+            <ul>
+                <li>
+                    <h4> {{ details.name }}</h4>
+                </li>
+                <li>
+                    <h4> <a :href="details.set_url">Link</a></h4>
+                </li>
+                <li>
+                    <h4> {{ details.set_num }}</h4>
+                </li>
+                <li>
+                    <h4> {{ details.num_parts }} pieces</h4>
+                </li>
+            </ul>
         </section>
 
         <section class="linechartsection">
-            <svg v-if="this.data" class="linegraph" :width="width" :height="630">
+            <svg v-if="this.data" class="linegraph" width="800" height="800" viewBox="0 0 900 600">
 
                 <g class="line">
                     <path :d="valueline" />
-                    <circle v-for="dot in calculated" 
-                        v-on:mouseover="line = dot" 
-                        :cx="xLineScale(dot.year)" 
-                        :cy="yLineScale(dot.mean) - 100" 
-                        :r="7"
-                        fill="yellow" 
-                        :value="dot.mean">
+                    <circle v-for="dot in calculated" v-on:mouseover="line = dot" :cx="xLineScale(dot.year)"
+                        :cy="yLineScale(dot.mean) - 100" :r="7" fill="yellow" :value="dot.mean">
                     </circle>
                 </g>
                 <g class="linedomain">
@@ -40,8 +43,9 @@
             </svg>
 
             <ul>
-                <li><h4> 
-                        Year: {{ line.year}}
+                <li>
+                    <h4>
+                        Year: {{ line.year }}
                     </h4>
                 </li>
 
@@ -94,7 +98,7 @@ export default {
             details: [],
             line: [],
             width: 800,
-            height: 700
+            height: 800,
         }
     },
     props: ['data', 'calculated'],
@@ -116,7 +120,7 @@ export default {
         yScale() {
             const yScale =
                 scaleLinear().domain([0, max(this.data, result => { // the highest value defines the data range of this axis.
-                    return result.num_parts + 250;
+                    return result.num_parts + 10
                 })]).range([this.height, 0])
             return yScale;
         },
@@ -126,11 +130,11 @@ export default {
                 return result.mean + 10
             })
             let minimum = min(this.calculated, result => { // the highest value defines the data range of this axis.
-                return result.mean 
+                return result.mean
             })
             return scaleLinear()
                 .domain([minimum, maximum + 10])
-                .range([this.height, 100])
+                .range([this.height, 0])
 
         },
         xLineScale() {
@@ -150,7 +154,7 @@ export default {
             graph // add all axis
                 .append('g')
                 .attr('class', 'axis')
-                .attr('transform', 'translate(50, -100)')
+                .attr('transform', 'translate(50, 700)')
                 .call(axisBottom(this.xScale))
 
             graph
@@ -168,7 +172,7 @@ export default {
             linegraph
                 .append('g')
                 .attr('class', 'lineaxis')
-                .attr('transform', 'translate(0, 600)')
+                .attr('transform', 'translate(0, 700)')
                 .call(axisBottom(this.xLineScale))
 
             linegraph
@@ -192,3 +196,46 @@ export default {
 
 
 </script>
+<style lang="scss" scoped>
+.allcharts {
+    display: flex;
+    flex-direction: row;
+}
+
+.allcharts section {
+    margin: 0 15px 0 0;
+    width: 100%;
+    svg{
+        display: block;
+        margin: 0 auto;
+    }
+
+}
+
+@media(max-width: 800px) {
+    .allcharts {
+        flex-direction: column;
+    }
+
+    .allcharts section {
+        margin: 0;
+        width: 100% !important;
+    }
+    .bargraph, .linegraph{
+        width: 100% !important;
+    }
+}
+
+.bargraph {
+    width: 80%;
+    height: 100%;
+   display: flex;
+   justify-content: center;
+}
+
+
+.linegraph {
+    width: 80%;
+    height: 100%;
+}
+</style>
